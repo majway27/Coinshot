@@ -1,0 +1,2 @@
+# Coinshot
+Minecraft Spigot Plugin
