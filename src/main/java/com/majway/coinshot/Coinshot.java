@@ -6,6 +6,7 @@ public class Coinshot extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("onEnable is called!");
+        this.getCommand("CoinshotNewBuilding").setExecutor(new NewBuildingCommand());
     }
     @Override
     public void onDisable() {

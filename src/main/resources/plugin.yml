@@ -1,3 +1,9 @@
-  name: Coinshot
-    main: com.majway.Coinshot.Coinshot
-  version: 1.0
+name: Coinshot
+main: com.majway.coinshot.Coinshot
+version: 1.0
+description: Be a landlord for a cool walkup!  Business or residential flats.
+api-version: 1.14
+commands:
+  CoinshotNewBuilding:
+    description: Coinshot plugin, creates a new building
+    usage: /coinshot
