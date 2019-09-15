@@ -17,7 +17,7 @@ public class NewBuildingCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            ItemStack plotMarkerSign = new ItemStack(Material.SPRUCE_SIGN, 1);
+            ItemStack plotMarkerSign = new ItemStack(Material.BIRCH_SIGN, 1);
             ItemMeta plotMarkerSignItemMeta = plotMarkerSign.getItemMeta();
 
             ArrayList<String> lore = new ArrayList<String>();
