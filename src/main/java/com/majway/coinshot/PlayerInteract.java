@@ -10,9 +10,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.bukkit.ChatColor.*;
@@ -23,7 +28,7 @@ public class PlayerInteract implements Listener {
     NamespacedKey locationKey = new NamespacedKey(Coinshot.getInstance(), "coinshot-location-key");
 
     @EventHandler
-    public void onPlayerPlace(BlockPlaceEvent e) {
+    public void onPlayerPlace(BlockPlaceEvent e) throws IOException {
         Player p = e.getPlayer();
         Block b = e.getBlock();
 
@@ -42,7 +47,10 @@ public class PlayerInteract implements Listener {
             buildingLocation[0] = signLocation.getBlockX();
             buildingLocation[1] = signLocation.getBlockY();
             buildingLocation[2] = signLocation.getBlockZ();
-            sign.getPersistentDataContainer().set(locationKey, PersistentDataType.INTEGER_ARRAY, buildingLocation);
+            sign.getPersistentDataContainer().set(
+                    locationKey,
+                    PersistentDataType.INTEGER_ARRAY,
+                    buildingLocation);
 
             sign.setEditable(true);
             if(p.hasPermission("signs.all")) {
@@ -55,12 +63,34 @@ public class PlayerInteract implements Listener {
 
             sign.update();
             p.sendMessage(b.getType().toString());
-            Bukkit.getLogger().info("Placed sign: " + uuidKey.toString());
+            Bukkit.getLogger().info("Placed Coinshot Plot Marker: " + uuidKey.toString());
+            Coinshot.updateBusiness(uuid, uuid.toString());
+
+            ItemStack coinshotBuildingLedger = new ItemStack(Material.WRITTEN_BOOK, 1);
+            BookMeta coinshotBuildingLedgerBookMeta = (BookMeta) coinshotBuildingLedger.getItemMeta();
+
+            ArrayList<String> lore = new ArrayList<String>();
+            lore.add("Use to control your building");
+            lore.add(String.format("For Building %s", uuidKey.toString()));
+
+            coinshotBuildingLedgerBookMeta.setDisplayName("Coinshot Building Ledger");
+            coinshotBuildingLedgerBookMeta.setLore(lore);
+            coinshotBuildingLedgerBookMeta.setAuthor(p.getDisplayName());
+            coinshotBuildingLedgerBookMeta.setGeneration(null);
+            coinshotBuildingLedgerBookMeta.addPage("Page 1");
+            coinshotBuildingLedgerBookMeta.setPage(1, "Report Page");
+            coinshotBuildingLedgerBookMeta.addPage("Page 2");
+            coinshotBuildingLedgerBookMeta.setPage(2, "Build Page");
+            coinshotBuildingLedgerBookMeta.addPage("Page 3");
+            coinshotBuildingLedgerBookMeta.setPage(3, "Info Page");
+
+            coinshotBuildingLedger.setItemMeta(coinshotBuildingLedgerBookMeta);
+            p.getInventory().addItem(coinshotBuildingLedger);
         }
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent e) {
+    public void onPlayerInteract(PlayerInteractEvent e) throws IOException {
         Player p = e.getPlayer();
         Block b = e.getClickedBlock();
         Action a = e.getAction();
@@ -81,6 +111,7 @@ public class PlayerInteract implements Listener {
                             buildingLocation[1],
                             buildingLocation[2]
                     ));
+                    p.sendMessage(String.format("getBusiness: %s", Coinshot.getBusiness(buildingId)));
                 }
             }
         }
