@@ -1,11 +1,14 @@
 package com.majway.coinshot;
 
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Coinshot extends JavaPlugin {
 
     private static Coinshot pluginCoinshot;
+
+    public static Coinshot getInstance() {
+        return pluginCoinshot;
+    }
 
     @Override
     public void onEnable() {
@@ -13,14 +16,11 @@ public class Coinshot extends JavaPlugin {
 
         pluginCoinshot = this;
         this.getCommand("CoinshotNewBuilding").setExecutor(new NewBuildingCommand());
+        getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
     }
     @Override
     public void onDisable() {
         pluginCoinshot = null;
         getLogger().info("onDisable is called!");
-    }
-
-    public static Coinshot getInstance() {
-        return pluginCoinshot;
     }
 }
